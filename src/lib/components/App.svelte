@@ -36,54 +36,55 @@ let shuffledNames = $derived(shuffle($sampledNames));
 </script>
 
 
-<div class="mx-32 mt-12">
+<div class="mx-2 sm:mx-8 md:mx-32">
 
-    <div class="relative flex items-center px-12 py-8">
-        <!-- Left button -->
-        <button
-            class="rounded bg-slate-800 border border-slate-500 px-4 py-2 hover:bg-slate-900 active:bg-slate-700"
-            onclick={() => {
-                showLegend = !showLegend
-                guess = [$sampledNames[1], $sampledNames[0]]
-                checkAnswer(shuffledNames, guess)
-                setTimeout(() => {
-                    resampleNames()
-                    showLegend = false
-                    guess = []
-                    message = "or"
-                    }, pause)
-                }} 
-        >
-            <span class="text-yellow-500 font-semibold">{$sampledNames[0]}</span> and 
-            <span class="text-teal-300 font-semibold">{$sampledNames[1]}</span>
-        </button>
+    <div class="my-8">
+        <div class="relative flex items-center gap-4">
+            <!-- Left button -->
+            <button
+                class="rounded bg-slate-800 border border-slate-500 px-1 py-2 hover:bg-slate-900 active:bg-slate-700"
+                onclick={() => {
+                    showLegend = !showLegend
+                    guess = [$sampledNames[1], $sampledNames[0]]
+                    checkAnswer(shuffledNames, guess)
+                    setTimeout(() => {
+                        resampleNames()
+                        showLegend = false
+                        guess = []
+                        message = "or"
+                        }, pause)
+                    }} 
+            >
+                <span class="text-yellow-500 font-semibold">{$sampledNames[0]}</span> and 
+                <span class="text-teal-300 font-semibold">{$sampledNames[1]}</span>
+            </button>
 
-        <!-- Center text -->
-        <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
-            { message }
+            <!-- Center text -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
+                { message }
+            </div>
+
+        <!-- Right button -->
+            <button
+                class="ml-auto rounded bg-slate-800 border border-slate-500 px-1 py-2 hover:bg-slate-900 active:bg-slate-700"
+                onclick={() => {
+                    showLegend = !showLegend
+                    guess = [$sampledNames[0], $sampledNames[1]]
+                    checkAnswer(shuffledNames, guess)
+                    setTimeout(() => {
+                        resampleNames()
+                        showLegend = false
+                        guess = []
+                        message = "or"
+                        }, pause)
+                    }} 
+            >
+                <span class="text-yellow-500 font-semibold">{$sampledNames[1]}</span> and
+                <span class="text-teal-300 font-semibold">{$sampledNames[0]}</span>
+                
+            </button>
         </div>
-
-    <!-- Right button -->
-        <button
-            class="ml-auto rounded bg-slate-800 border border-slate-500 px-4 py-2 hover:bg-slate-900 active:bg-slate-700"
-            onclick={() => {
-                showLegend = !showLegend
-                guess = [$sampledNames[0], $sampledNames[1]]
-                checkAnswer(shuffledNames, guess)
-                setTimeout(() => {
-                    resampleNames()
-                    showLegend = false
-                    guess = []
-                    message = "or"
-                    }, pause)
-                }} 
-        >
-            <span class="text-yellow-500 font-semibold">{$sampledNames[1]}</span> and
-            <span class="text-teal-300 font-semibold">{$sampledNames[0]}</span>
-            
-        </button>
-    </div>
-
+    </div>    
     <Plot
         x={{
             axis: 'bottom',
