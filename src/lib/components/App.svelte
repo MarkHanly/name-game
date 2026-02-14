@@ -9,14 +9,14 @@
 
   let showLegend = $state(false);
   let guess = $state([]);
-  let pause = 1000;
+  let pause = $state(1000);
   let message = $state(null);
 
   function checkAnswer(input1, input2) {
     if (input1[0] === input2[0] && input1[1] === input2[1]) {
-        message = "Correct!";
+        message = "You got it!";
         } else {
-            message = "Incorrect";
+            message = "Nope!";
         }
 
     }    
@@ -39,16 +39,21 @@ let shuffledNames = $derived(shuffle($sampledNames));
   let emoji = $state(null);
 
   function pickEmoji(message) {
-    emoji = message === "Correct!" ? 
+    emoji = message === "You got it!" ? 
         positiveEmojis[Math.floor(Math.random() * positiveEmojis.length)] : 
         negativeEmojis[Math.floor(Math.random() * negativeEmojis.length)];
   }
 
   // Modal state
   let showModal = $state(false);
+  let showSettings = $state(false);
 
   function toggleModal() {
     showModal = !showModal;
+  }
+
+  function toggleSettings() {
+    showSettings = !showSettings;
   }
 
 </script>
@@ -56,23 +61,32 @@ let shuffledNames = $derived(shuffle($sampledNames));
 <div class="mx-2 sm:mx-8 md:mx-32">
 
     <div
-        class="text-right pt-2 pr-2"
+        class="text-right pt-2 pr-2 gap-2"
     >
 
     <!-- Info icon -->
     <button 
-    class="text-gray-600 hover:text-gray-400 active:text-gray-200"
-    onclick={toggleModal}
-    aria-label="Info"
-    >
-    <Icon icon="mdi:information" width="24" />
+        class="text-gray-600 hover:text-gray-400 active:text-gray-200"
+        onclick={toggleModal}
+        aria-label="Info"
+        >
+        <Icon icon="mdi:information" width="18" />
+    </button>
+
+    <!-- Settings icon -->
+    <button 
+        class="text-gray-600 hover:text-gray-400 active:text-gray-200"
+        onclick={toggleSettings}
+        aria-label="Info"
+        >
+        <Icon icon="mdi:cog" width="18" />
     </button>
 
     </div>
 
     <div
         class = "text-2xl md:text-3xl font-semibold text-center tracking-tight">
-        Pick the right legend!
+        Match the lines to the names!
     </div>
 
     <div class="my-3">
@@ -85,13 +99,15 @@ let shuffledNames = $derived(shuffle($sampledNames));
                     guess = [$sampledNames[1], $sampledNames[0]]
                     checkAnswer(shuffledNames, guess)
                     pickEmoji(message)
-                    setTimeout(() => {
-                        resampleNames()
-                        showLegend = false
-                        emoji = null
-                        guess = []
-                        message = null
-                        }, pause)
+                    if (pause) {
+                        setTimeout(() => {
+                            resampleNames()
+                            showLegend = false
+                            emoji = null
+                            guess = []
+                            message = null
+                    }, pause)
+                    }
                     }} 
             >
                 <span class="bg-blue-950 text-yellow-500 font-semibold">{$sampledNames[0]}</span> & <br> 
@@ -112,13 +128,15 @@ let shuffledNames = $derived(shuffle($sampledNames));
                     guess = [$sampledNames[0], $sampledNames[1]]
                     checkAnswer(shuffledNames, guess)
                     pickEmoji(message)
-                    setTimeout(() => {
-                        resampleNames()
-                        showLegend = false
-                        emoji = null
-                        guess = []
-                        message = null
-                        }, pause)
+                    if (pause) {
+                        setTimeout(() => {
+                            resampleNames()
+                            showLegend = false
+                            emoji = null
+                            guess = []
+                            message = null
+                    }, pause)
+                    }
                     }} 
             >
                 <span class="text-yellow-500 font-semibold">{$sampledNames[1]}</span> & <br> 
@@ -164,6 +182,8 @@ let shuffledNames = $derived(shuffle($sampledNames));
     onclick={() => {
         resampleNames();
         showLegend = false
+        emoji = null
+        message = null
     }
     }
 >
@@ -207,8 +227,54 @@ let shuffledNames = $derived(shuffle($sampledNames));
       </p>
       <br>
       <p class="text-gray-700">
-        Can you match the legend to the lines?
+        Can you match the correct names to the lines?
       </p>
+    </div>
+  </div>
+{/if}
+
+
+<!-- Settings overlay -->
+{#if showSettings}
+  <div class="fixed inset-0 bg-gray-850 flex items-center justify-center z-50">
+
+    <!-- Modal content -->
+    <div class="bg-white p-6 rounded-lg max-w-md mx-4 text-center relative">
+      <button 
+        class="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        onclick={toggleSettings}
+      >✕
+      </button>
+
+      <div class="text-lg font-semibold mb-2 text-gray-800 ">Settings</div>
+      <hr>
+      <p class="text-gray-700">
+        
+      </p>
+      <br>
+      <p class="text-gray-700">
+        Automatically advance?
+      </p>
+
+
+<div class="flex">
+    <div class="flex items-center me-4">
+        <input id="inline-radio" type="radio" bind:group={pause} value={null} name="inline-radio-group" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+        <label for="inline-radio" class="select-none ms-2 text-sm font-medium text-heading">Don't advance</label>
+    </div>
+    <div class="flex items-center me-4">
+        <input checked id="inline-2-radio" type="radio" bind:group={pause} value={1000} name="inline-radio-group" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+        <label for="inline-2-radio" class="select-none ms-2 text-sm font-medium text-heading">1 second</label>
+    </div>
+    <div class="flex items-center me-4">
+        <input id="inline-checked-radio" type="radio" bind:group={pause} value={5000} name="inline-radio-group" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+        <label for="inline-checked-radio" class="select-none ms-2 text-sm font-medium text-heading">5 secnds</label>
+    </div>
+</div>
+
+
+{pause}
+
     </div>
   </div>
 {/if}
