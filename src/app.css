@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "flowbite/src/themes/default";
+@source "../node_modules/flowbite";
+
 
 /* global overrides for your site */
 @layer base {

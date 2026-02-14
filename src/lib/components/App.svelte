@@ -2,6 +2,7 @@
 	import { Plot, RuleY, Line } from 'svelteplot'
     import { onMount } from "svelte";
     import { sampledNames, sampledRecords, resampleNames } from "$lib/stores/names";
+    import Icon from '@iconify/svelte';
 
   // sample names on mount
   onMount(() => resampleNames());
@@ -32,18 +33,49 @@ function shuffle(names) {
 
 let shuffledNames = $derived(shuffle($sampledNames));
  
+  const positiveEmojis = ["✨", "🎉", "🚀", "🔥", "🌟", "😎"];
+  const negativeEmojis = ["💩", "😢", "☹️", "😞", "😔", "😩"];
+
+  let emoji = $state(null);
+
+  function pickEmoji(message) {
+    emoji = message === "Correct!" ? 
+        positiveEmojis[Math.floor(Math.random() * positiveEmojis.length)] : 
+        negativeEmojis[Math.floor(Math.random() * negativeEmojis.length)];
+  }
+
+  // Modal state
+  let showModal = $state(false);
+
+  function toggleModal() {
+    showModal = !showModal;
+  }
 
 </script>
-
 
 <div class="mx-2 sm:mx-8 md:mx-32">
 
     <div
-        class = "mt-6 text-2xl md:text-3xl font-semibold text-center tracking-tight">
+        class="text-right pt-2 pr-2"
+    >
+
+    <!-- Info icon -->
+    <button 
+    class="text-gray-600 hover:text-gray-400 active:text-gray-200"
+    onclick={toggleModal}
+    aria-label="Info"
+    >
+    <Icon icon="mdi:information" width="24" />
+    </button>
+
+    </div>
+
+    <div
+        class = "text-2xl md:text-3xl font-semibold text-center tracking-tight">
         Pick the right legend!
     </div>
 
-    <div class="my-8">
+    <div class="my-3">
         <div class="relative flex items-center gap-4">
             <!-- Left button -->
             <button
@@ -52,9 +84,11 @@ let shuffledNames = $derived(shuffle($sampledNames));
                     showLegend = !showLegend
                     guess = [$sampledNames[1], $sampledNames[0]]
                     checkAnswer(shuffledNames, guess)
+                    pickEmoji(message)
                     setTimeout(() => {
                         resampleNames()
                         showLegend = false
+                        emoji = null
                         guess = []
                         message = null
                         }, pause)
@@ -65,6 +99,11 @@ let shuffledNames = $derived(shuffle($sampledNames));
 
             </button>
 
+            <!-- Center text -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
+                or
+            </div>
+
         <!-- Right button -->
             <button
                 class="ml-auto rounded bg-slate-800 border border-slate-500 px-1 py-2 min-w-[30vw] max-w-[40vw] hover:bg-slate-900 active:bg-slate-700"
@@ -72,9 +111,11 @@ let shuffledNames = $derived(shuffle($sampledNames));
                     showLegend = !showLegend
                     guess = [$sampledNames[0], $sampledNames[1]]
                     checkAnswer(shuffledNames, guess)
+                    pickEmoji(message)
                     setTimeout(() => {
                         resampleNames()
                         showLegend = false
+                        emoji = null
                         guess = []
                         message = null
                         }, pause)
@@ -88,8 +129,8 @@ let shuffledNames = $derived(shuffle($sampledNames));
     </div>    
 
     <!-- Center text -->
-    <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
-        { message }
+    <div class="absolute left-1/2 transform -translate-x-1/2 text-center font-semibold text-lg">
+        { message } { emoji }
     </div>
 
 
@@ -119,7 +160,7 @@ let shuffledNames = $derived(shuffle($sampledNames));
 </div>
 
 <button 
-    class="mt-8 mx-auto block px-4 py-2 bg-slate-500 text-slate-100 rounded"
+    class="my-8 mx-auto block px-4 py-2 bg-slate-500 text-slate-100 rounded"
     onclick={() => {
         resampleNames();
         showLegend = false
@@ -131,7 +172,7 @@ let shuffledNames = $derived(shuffle($sampledNames));
 
 
 <footer 
-  class="fixed bottom-0 left-0 w-full bg-gray-800 text-gray-400 text-sm py-2 text-center">
+  class="fixed bottom-0 left-0 w-full bg-gray-800 text-gray-400 text-sm py-1 text-center">
   
   <span>
     Data: 
@@ -146,7 +187,31 @@ let shuffledNames = $derived(shuffle($sampledNames));
   </span>
 </footer>
 
+<!-- Modal overlay -->
+{#if showModal}
+  <div class="fixed inset-0 bg-gray-850 flex items-center justify-center z-50">
 
+    <!-- Modal content -->
+    <div class="bg-white p-6 rounded-lg max-w-md mx-4 text-center relative">
+      <button 
+        class="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        onclick={toggleModal}
+      >✕
+      </button>
+
+      <div class="text-lg font-semibold mb-2 text-gray-800 ">How to play</div>
+      <hr>
+      <p class="text-gray-700">
+        The chart shows the number of registered babies in New South Wales from 1955 - 2025 
+        for two randomly selected names. 
+      </p>
+      <br>
+      <p class="text-gray-700">
+        Can you match the legend to the lines?
+      </p>
+    </div>
+  </div>
+{/if}
 
 <style>
   :global(.color-legend) {
