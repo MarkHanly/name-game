@@ -9,7 +9,7 @@
   let showLegend = $state(false);
   let guess = $state([]);
   let pause = 1000;
-  let message = $state("or");
+  let message = $state(null);
 
   function checkAnswer(input1, input2) {
     if (input1[0] === input2[0] && input1[1] === input2[1]) {
@@ -38,11 +38,16 @@ let shuffledNames = $derived(shuffle($sampledNames));
 
 <div class="mx-2 sm:mx-8 md:mx-32">
 
+    <div
+        class = "mt-6 text-2xl md:text-3xl font-semibold text-center tracking-tight">
+        Pick the right legend!
+    </div>
+
     <div class="my-8">
         <div class="relative flex items-center gap-4">
             <!-- Left button -->
             <button
-                class="rounded bg-slate-800 border border-slate-500 px-1 py-2 hover:bg-slate-900 active:bg-slate-700"
+                class="rounded bg-slate-800 border border-slate-500 px-2 py-2 min-w-[30vw] max-w-[40vw] hover:bg-slate-900 active:bg-slate-700"
                 onclick={() => {
                     showLegend = !showLegend
                     guess = [$sampledNames[1], $sampledNames[0]]
@@ -51,22 +56,18 @@ let shuffledNames = $derived(shuffle($sampledNames));
                         resampleNames()
                         showLegend = false
                         guess = []
-                        message = "or"
+                        message = null
                         }, pause)
                     }} 
             >
-                <span class="text-yellow-500 font-semibold">{$sampledNames[0]}</span> and 
+                <span class="bg-blue-950 text-yellow-500 font-semibold">{$sampledNames[0]}</span> & <br> 
                 <span class="text-teal-300 font-semibold">{$sampledNames[1]}</span>
-            </button>
 
-            <!-- Center text -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
-                { message }
-            </div>
+            </button>
 
         <!-- Right button -->
             <button
-                class="ml-auto rounded bg-slate-800 border border-slate-500 px-1 py-2 hover:bg-slate-900 active:bg-slate-700"
+                class="ml-auto rounded bg-slate-800 border border-slate-500 px-1 py-2 min-w-[30vw] max-w-[40vw] hover:bg-slate-900 active:bg-slate-700"
                 onclick={() => {
                     showLegend = !showLegend
                     guess = [$sampledNames[0], $sampledNames[1]]
@@ -75,16 +76,23 @@ let shuffledNames = $derived(shuffle($sampledNames));
                         resampleNames()
                         showLegend = false
                         guess = []
-                        message = "or"
+                        message = null
                         }, pause)
                     }} 
             >
-                <span class="text-yellow-500 font-semibold">{$sampledNames[1]}</span> and
+                <span class="text-yellow-500 font-semibold">{$sampledNames[1]}</span> & <br> 
                 <span class="text-teal-300 font-semibold">{$sampledNames[0]}</span>
                 
             </button>
         </div>
     </div>    
+
+    <!-- Center text -->
+    <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
+        { message }
+    </div>
+
+
     <Plot
         x={{
             axis: 'bottom',
@@ -120,6 +128,24 @@ let shuffledNames = $derived(shuffle($sampledNames));
 >
   Resample Names
 </button>
+
+
+<footer 
+  class="fixed bottom-0 left-0 w-full bg-gray-800 text-gray-400 text-sm py-6 text-center">
+  
+  <span>
+    Data: 
+    <a 
+      href="https://www.nsw.gov.au/family-and-relationships/births/popular-baby-names"
+      class="underline hover:text-gray-300"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      NSW Popular Baby Names
+    </a>
+  </span>
+</footer>
+
 
 
 <style>
