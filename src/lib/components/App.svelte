@@ -58,19 +58,25 @@ let shuffledNames = $derived(shuffle($sampledNames));
 
 </script>
 
+
 <div class="mx-2 sm:mx-8 md:mx-32">
 
     <div
-        class="text-right pt-2 pr-2 gap-2"
+        class = "text-2xl md:text-3xl font-semibold text-center tracking-tight mt-2">
+        Match the lines to the names!
+    </div>
+
+    <div
+        class="text-right pr-2"
     >
 
     <!-- Info icon -->
     <button 
-        class="text-gray-600 hover:text-gray-400 active:text-gray-200"
+        class="text-gray-600 hover:text-gray-400 active:text-gray-200 pr-2"
         onclick={toggleModal}
         aria-label="Info"
         >
-        <Icon icon="mdi:information" width="18" />
+        <Icon icon="mdi:information" width="20" />
     </button>
 
     <!-- Settings icon -->
@@ -79,14 +85,9 @@ let shuffledNames = $derived(shuffle($sampledNames));
         onclick={toggleSettings}
         aria-label="Info"
         >
-        <Icon icon="mdi:cog" width="18" />
+        <Icon icon="mdi:cog" width="20" />
     </button>
 
-    </div>
-
-    <div
-        class = "text-2xl md:text-3xl font-semibold text-center tracking-tight">
-        Match the lines to the names!
     </div>
 
     <div class="my-3">
