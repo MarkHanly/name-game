@@ -131,7 +131,7 @@ let shuffledNames = $derived(shuffle($sampledNames));
 
 
 <footer 
-  class="fixed bottom-0 left-0 w-full bg-gray-800 text-gray-400 text-sm py-6 text-center">
+  class="fixed bottom-0 left-0 w-full bg-gray-800 text-gray-400 text-sm py-2 text-center">
   
   <span>
     Data: 
